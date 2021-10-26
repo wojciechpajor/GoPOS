@@ -1,5 +1,5 @@
 export interface CategoryProps {
-    props:CategoryDto;
+    props: CategoryDto;
 }
 
 export enum Status {

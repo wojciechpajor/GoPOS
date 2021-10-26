@@ -1,12 +1,16 @@
+import {CategoryDto} from "../../Categories/Category/Category.model";
+
 export interface ProductProps {
-    props:ProductDto
+    product: ProductDto
+    categories: CategoryDto[]
 }
 
 export interface ProductDto {
     id: number;
-    uid: string,
     name: string,
-    recipe_amount: number,
-    category_id: 45,
+    type: string,
+    category_id: number,
+    tax_id: number,
     updated_at: Date,
+    measure_type: string
 }
