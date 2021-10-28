@@ -1,5 +1,5 @@
 import axios from "axios";
-import {CategoryDto, Status} from "./Category/Category.model";
+import {CategoryDto} from "./Category/Category.model";
 import {toast, ToastOptions} from "react-toastify";
 
 axios.defaults.headers.common["Authorization"] = 'fd9ba9e1-0788-4e8f-ac46-a43df43e205e';
@@ -31,12 +31,13 @@ const deleteCategory = (id: number): Promise<void> => {
 }
 
 const putCategory = (category: CategoryDto): Promise<void> => {
-    return axios.put(`${URL}/products/${category.id}`,
+    return axios.put(`${URL}/product_categories/${category.id}`,
         {
             "name": category.name,
-            "id": category.id,
-            "updated_at": Date,
-            "status": Status,
+            "id": +category.id,
+            "updated_at": category.updated_at,
+            "status": "ENABLED",
+            "uid": category.uid
         })
         .then((_) => showToast('SUCCESS', "Edytowano kategorię"))
         .catch((error) => showToast('ERROR', error.message))

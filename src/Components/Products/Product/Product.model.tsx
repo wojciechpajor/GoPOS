@@ -6,7 +6,7 @@ export interface ProductProps {
 }
 
 export interface ProductDto {
-    id: number;
+    id: number,
     name: string,
     type: string,
     category_id: number,

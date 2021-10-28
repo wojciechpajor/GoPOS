@@ -16,7 +16,7 @@ const Products = () => {
         Promise
             .all([fetchCategories(), fetchProducts()])
             .then((_ => setIsLoaded(true)))
-    }, )
+    }, [])
 
     const fetchProducts = (): Promise<ProductDto[]> => {
         return ProductService
