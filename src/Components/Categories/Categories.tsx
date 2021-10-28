@@ -1,61 +1,33 @@
 import React from 'react';
 import {useEffect, useState} from "react";
-import axios from "axios";
 import Category from "./Category/Category";
 import {CategoryDto} from "./Category/Category.model";
-import {toast, ToastContainer} from "react-toastify";
+import {ToastContainer} from "react-toastify";
+import ProductService from "../Products/Product.service";
 
 const Categories = () => {
-    const [items, setItems] = useState<CategoryDto[] | []>([]);
+    const [categories, setCategories] = useState<CategoryDto[] | []>([]);
     const [isLoaded, setIsLoaded] = useState(false);
-    const [input, setInput] = useState('');
-    const url = "https://newdemostock.gopos.pl//ajax/219/product_categories"
 
     useEffect(() => {
-        const fetchData = async () => {
-            const result:any = await axios.get(url)
-            await setItems(result.data.data)
-            await (setIsLoaded(true))
-        };
-        fetchData();
+        fetchCategories()
+            .then(_ => setIsLoaded(true))
     }, [])
 
-    const handleClick = () => {
-        axios.post('https://newdemostock.gopos.pl//ajax/219/product_categories', {
-            "name": input
-        })
-            .then((response) => {
-                if (response.status === 200) {
-                    toast.success("Dodano kategorie", {
-                        position: "top-center",
-                        autoClose: 5000,
-                        hideProgressBar: false,
-                        closeOnClick: true,
-                        pauseOnHover: true,
-                        draggable: true,
-                        progress: undefined,
-                    });
-                }
-                else {
-                    console.log(response);
-                }
+    const fetchCategories = (): Promise<CategoryDto[]> => {
+        return ProductService
+            .getCategories()
+            .then((response: CategoryDto[]) => {
+                setCategories(response);
+                return response;
             })
-            .catch((error) => {
-                toast.error(error.message, {
-                    position: "top-center",
-                    autoClose: 5000,
-                    hideProgressBar: false,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined,
-                });
-            })
+
     }
 
     return(
         <div className="container">
             <ToastContainer
+                onClick={fetchCategories}
                 position="top-center"
                 autoClose={5000}
                 hideProgressBar={false}
@@ -67,13 +39,22 @@ const Categories = () => {
                 pauseOnHover
             />
             <div className="row">
-                <div className="form-group mt-1" style={{border: "solid"}}>
-                    <input className="form-control mt-1"  placeholder="Nazwa kategorii" onChange={(e) => {setInput(e.target.value)}}/>
-                    <button onClick={handleClick} className="btn m-1" style={{border: "solid"}}>Dodaj kategorie</button>
-                </div>
                 {
                     isLoaded
-                        ? items.map(item => <Category  key={item.id} props={item}/>)
+                        ?
+                        <div className="card-group">
+                            <div className="col-md-6 col-lg-4 p-4">
+                                <div className="card border-1 border-success" style={{minHeight: "15rem"}}>
+                                    <div className="card-block m-auto text-success">
+                                        <h4 className="card-title m-0" style={{fontSize: "6rem"}}>+</h4>
+                                        <a href={`/category/add`} className="btn m-1 btn-success">Dodaj kategorię</a>
+                                    </div>
+                                </div>
+                            </div>
+                            {
+                                categories.map(item => <Category  key={item.id} props={item}/>)
+                            }
+                        </div>
                         : <div>Loading</div>
                 }
             </div>
